@@ -3,14 +3,12 @@ locals {
   # See https://azure.github.io/Azure-Verified-Modules/specs/shared/#id-sfr3---category-telemetry---deploymentusage-telemetry
   telem_puid = "46d3xgtf"
 
-  # TODO: change this to the name of the module. See https://azure.github.io/Azure-Verified-Modules/specs/shared/#id-sfr3---category-telemetry---deploymentusage-telemetry
-  module_name = "CHANGEME"
+  module_name = "terraform-azurerm-avm-ptn-lbvmss"
 
-  # TODO: Change this. Should be either `res` or `ptn`
-  module_type = "res"
+  module_type = "ptn"
 
   # This ensures we don't get errors if telemetry is disabled.
-  telem_random_hex = can(random_id.telem[0].hex) ? random_id.telem[0].hex : ""
+  telem_random_hex = can(random_id.telemetry[0].hex) ? random_id.telemetry[0].hex : ""
 
   # This constructs the ARM deployment name that is used for the telemetry.
   # We shouldn't ever hit the 64 character limit but use substr just in case.

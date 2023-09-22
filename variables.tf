@@ -13,3 +13,8 @@ variable "resource_group_name" {
   type        = string
   description = "The resource group where the resources will be deployed."
 }
+
+variable "location" {
+  type        = string
+  description = "The region where the resources will be deployed."
+}
