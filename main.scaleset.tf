@@ -1,20 +1,20 @@
 resource "azurerm_orchestrated_virtual_machine_scale_set" "virtual_machine_scale_set" {
-  name                        = "vmss-terraform"
-  resource_group_name         = azurerm_resource_group.rg.name
-  location                    = azurerm_resource_group.rg.location
-  sku_name                    = "Standard_D2s_v4"
-  instances                   = 3
-  platform_fault_domain_count = 1     # For zonal deployments, this must be set to 1
-  zones                       = ["1"] # Zones required to lookup zone in the startup script
+  name                        = var.virtual_machine_scale_set.name
+  resource_group_name         = var.resource_group_name
+  location                    = var.location
+  sku_name                    = var.virtual_machine_scale_set.sku_name
+  instances                   = var.virtual_machine_scale_set.instances
+  platform_fault_domain_count = 1               # For zonal deployments, this must be set to 1
+  zones                       = ["1", "2", "3"] # Zones required to lookup zone in the startup script
 
   # user_data_base64 = base64encode(file("user-data.sh"))
   os_profile {
     linux_configuration {
       disable_password_authentication = true
-      admin_username                  = "azureuser"
+      admin_username                  = var.virtual_machine_scale_set.os_profile.linux_configuration.admin_username
       admin_ssh_key {
-        username   = "azureuser"
-        public_key = file("c:/tmp/key.txt")
+        username   = var.virtual_machine_scale_set.os_profile.linux_configuration.admin_ssh_key.username
+        public_key = var.virtual_machine_scale_set.os_profile.linux_configuration.admin_ssh_key.public_key
       }
     }
   }
@@ -25,6 +25,7 @@ resource "azurerm_orchestrated_virtual_machine_scale_set" "virtual_machine_scale
     sku       = "22_04-LTS-gen2"
     version   = "latest"
   }
+
   os_disk {
     storage_account_type = "Premium_LRS"
     caching              = "ReadWrite"

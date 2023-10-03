@@ -1,59 +1,38 @@
 # Create an virtual network and subnet
 resource "azurerm_virtual_network" "test" {
-  name                = "terraformvnet"
-  address_space       = ["10.0.0.0/16"]
-  location            = azurerm_resource_group.rg.location
-  resource_group_name = azurerm_resource_group.rg.name
+  name                = var.virtual_network.name
+  address_space       = var.virtual_network.address_space
+  location            = var.location
+  resource_group_name = var.resource_group_name
 }
 
 resource "azurerm_subnet" "subnet" {
-  name                 = "subnet"
-  resource_group_name  = azurerm_resource_group.rg.name
+  name                 = var.virtual_network.subnet.name
+  resource_group_name  = var.resource_group_name
   virtual_network_name = azurerm_virtual_network.test.name
-  address_prefixes     = ["10.0.0.0/20"]
+  address_prefixes     = var.virtual_network.subnet.address_prefix
 }
 
 # network security group for the subnet with a rule to allow http, https and ssh traffic
 resource "azurerm_network_security_group" "myNSG" {
-  name                = "myNSG"
-  location            = azurerm_resource_group.rg.location
-  resource_group_name = azurerm_resource_group.rg.name
+  name                = var.virtual_network.network_security_group.name
+  location            = var.location
+  resource_group_name = var.resource_group_name
+}
 
-  security_rule {
-    name                       = "allow-http"
-    priority                   = 100
-    direction                  = "Inbound"
-    access                     = "Allow"
-    protocol                   = "Tcp"
-    source_port_range          = "*"
-    destination_port_range     = "80"
-    source_address_prefix      = "*"
-    destination_address_prefix = "*"
-  }
-
-  security_rule {
-    name                       = "allow-https"
-    priority                   = 101
-    direction                  = "Inbound"
-    access                     = "Allow"
-    protocol                   = "Tcp"
-    source_port_range          = "*"
-    destination_port_range     = "443"
-    source_address_prefix      = "*"
-    destination_address_prefix = "*"
-  }
-  #ssh security rule
-  security_rule {
-    name                       = "allow-ssh"
-    priority                   = 102
-    direction                  = "Inbound"
-    access                     = "Allow"
-    protocol                   = "Tcp"
-    source_port_range          = "*"
-    destination_port_range     = "22"
-    source_address_prefix      = "*"
-    destination_address_prefix = "*"
-  }
+resource "azurerm_network_security_rule" "rules" {
+  for_each                  = { for rule in var.virtual_network.network_security_group.security_rules : rule.name => rule}
+  name                      = each.key
+  priority                  = each.value.priority
+  direction                 = each.value.direction
+  access                    = each.value.access
+  protocol                  = each.value.protocol
+  source_port_range         = each.value.source_port_range
+  destination_port_range    = each.value.destination_port_range
+  source_address_prefix     = each.value.source_address_prefix
+  destination_address_prefix= each.value.destination_address_prefix  
+  resource_group_name       = var.resource_group_name
+  network_security_group_name = var.virtual_network.network_security_group.name
 }
 
 resource "azurerm_subnet_network_security_group_association" "myNSG" {
@@ -61,24 +40,23 @@ resource "azurerm_subnet_network_security_group_association" "myNSG" {
   network_security_group_id = azurerm_network_security_group.myNSG.id
 }
 
-
 resource "azurerm_public_ip" "natgwpip" {
-  name                = "natgw-publicIP"
-  location            = azurerm_resource_group.rg.location
-  resource_group_name = azurerm_resource_group.rg.name
-  allocation_method   = "Static"
-  sku                 = "Standard"
-  zones               = ["1"]
+  name                = var.virtual_network.nat_gateway.public_ip.name
+  location            = var.location
+  resource_group_name = var.resource_group_name
+  allocation_method   = var.virtual_network.nat_gateway.public_ip.allocation_method
+  sku                 = var.virtual_network.nat_gateway.public_ip.sku
+  zones               = var.virtual_network.nat_gateway.public_ip.zones
 }
 
 #add nat gateway to enable outbound traffic from the backend instances
 resource "azurerm_nat_gateway" "example" {
-  name                    = "nat-Gateway"
-  location                = azurerm_resource_group.rg.location
-  resource_group_name     = azurerm_resource_group.rg.name
-  sku_name                = "Standard"
+  name                    = var.virtual_network.nat_gateway.name
+  location                = var.location
+  resource_group_name     = var.resource_group_name
+  sku_name                = var.virtual_network.nat_gateway.sku
   idle_timeout_in_minutes = 10
-  zones                   = ["1"]
+  zones                   = var.virtual_network.nat_gateway.zones 
 }
 
 resource "azurerm_subnet_nat_gateway_association" "example" {
