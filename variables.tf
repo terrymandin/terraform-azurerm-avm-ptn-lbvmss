@@ -51,7 +51,17 @@ variable "virtual_machine_scale_set" {
         provision_vm_agent       = optional(bool, true)
       }), {})
     })
-  })   
+    source_image_reference = object({
+      publisher = string
+      offer     = string
+      sku       = string
+      version   = string
+    })
+    os_disk = optional(object({
+      storage_account_type = optional(string, "Premium_LRS")
+      caching              = optional(string, "ReadWrite")
+    }), {}) 
+  })  
 }
 
 variable load_balancer {

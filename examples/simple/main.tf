@@ -52,7 +52,7 @@ module "load_balancer_scale_set" {
   resource_group_name = azurerm_resource_group.this.name
   location            = azurerm_resource_group.this.location
   virtual_machine_scale_set = {
-    name      = module.naming.virtual_machine_scale_set.name_unique
+    name = module.naming.virtual_machine_scale_set.name_unique
     os_profile = {
       linux_configuration = {
         disable_password_authentication = false
@@ -64,6 +64,12 @@ module "load_balancer_scale_set" {
         }
       }
     }
+    source_image_reference = {
+      publisher = "Canonical"
+      offer     = "0001-com-ubuntu-server-jammy"
+      sku       = "22_04-LTS-gen2"
+      version   = "latest"
+    }
   }
   load_balancer = {
     name = module.naming.lb.name_unique
@@ -73,12 +79,12 @@ module "load_balancer_scale_set" {
     }
   }
   virtual_network = {
-    name          = module.naming.virtual_network.name_unique
+    name = module.naming.virtual_network.name_unique
     subnet = {
     }
     nat_gateway = {
       public_ip = {
-        name              = "${module.naming.public_ip.name_unique}-2"
+        name = "${module.naming.public_ip.name_unique}-2"
       }
     }
     network_security_group = {

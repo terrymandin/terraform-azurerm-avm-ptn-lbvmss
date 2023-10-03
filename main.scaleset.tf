@@ -20,15 +20,15 @@ resource "azurerm_orchestrated_virtual_machine_scale_set" "virtual_machine_scale
   }
 
   source_image_reference {
-    publisher = "Canonical"
-    offer     = "0001-com-ubuntu-server-jammy"
-    sku       = "22_04-LTS-gen2"
-    version   = "latest"
+    publisher = var.virtual_machine_scale_set.source_image_reference.publisher
+    offer     = var.virtual_machine_scale_set.source_image_reference.offer
+    sku       = var.virtual_machine_scale_set.source_image_reference.sku
+    version   = var.virtual_machine_scale_set.source_image_reference.version
   }
 
   os_disk {
-    storage_account_type = "Premium_LRS"
-    caching              = "ReadWrite"
+    storage_account_type = var.virtual_machine_scale_set.os_disk.storage_account_type
+    caching              = var.virtual_machine_scale_set.os_disk.caching
   }
 
   network_interface {
