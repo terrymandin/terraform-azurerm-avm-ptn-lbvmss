@@ -42,8 +42,8 @@ module "naming" {
 }
 
 resource "azurerm_resource_group" "this" {
-  name     = "avm2"   #module.naming.resource_group.name_unique
-  location = "eastus" #local.azure_regions[random_integer.region_index.result]
+  name     = module.naming.resource_group.name_unique
+  location = local.azure_regions[random_integer.region_index.result]
 }
 
 module "load_balancer_scale_set" {

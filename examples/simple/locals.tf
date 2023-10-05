@@ -1,16 +1,12 @@
-# We pick a random region from this list.
+# We pick a random region from this list.  These regions support zonal deployments.
 locals {
   azure_regions = [
-    "westeurope",
-    "northeurope",
+    #"westeurope",
+    #"northeurope",
     "eastus",
-    "eastus2",
-    "westus",
-    "westus2",
-    "southcentralus",
-    "northcentralus",
-    "centralus",
-    "eastasia",
-    "southeastasia",
+    #"eastus2",
+    #"westus2",
+    #"southcentralus",
+    #"centralus",
   ]
 }
