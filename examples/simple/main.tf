@@ -127,3 +127,19 @@ module "load_balancer_scale_set" {
   }
 }
 
+#add lb nat rules to allow ssh access to the backend instances
+resource "azurerm_lb_nat_rule" "ssh" {
+  name                           = "ssh"
+  resource_group_name            = azurerm_resource_group.this.name
+  loadbalancer_id                = module.load_balancer_scale_set.loadbalancer_id
+  protocol                       = "Tcp"
+  frontend_port_start            = 50000
+  frontend_port_end              = 50119
+  backend_port                   = 22
+  frontend_ip_configuration_name = "myPublicIP"
+  backend_address_pool_id        = module.load_balancer_scale_set.backend_address_pool_id
+  depends_on = [
+    module.load_balancer_scale_set.loadbalancer_id,
+    module.load_balancer_scale_set.backend_address_pool_id
+  ]
+}
