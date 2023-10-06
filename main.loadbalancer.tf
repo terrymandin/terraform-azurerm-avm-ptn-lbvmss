@@ -10,6 +10,7 @@ resource "azurerm_public_ip" "this" {
   sku                 = var.load_balancer.ip.sku
   zones               = var.load_balancer.ip.zones
   domain_name_label   = var.load_balancer.ip.domain_name_label
+  tags                = var.tags
 }
 
 # A load balancer with a frontend IP configuration and a backend address pool
@@ -22,6 +23,7 @@ resource "azurerm_lb" "this" {
     name                 = var.load_balancer.frontend_ip_configuration.name
     public_ip_address_id = azurerm_public_ip.this.id
   }
+  tags                = var.tags
 }
 
 resource "azurerm_lb_backend_address_pool" "bepool" {

@@ -4,6 +4,7 @@ resource "azurerm_virtual_network" "test" {
   address_space       = var.virtual_network.address_space
   location            = var.location
   resource_group_name = var.resource_group_name
+  tags                = var.tags
 }
 
 resource "azurerm_subnet" "subnet" {
@@ -18,6 +19,7 @@ resource "azurerm_network_security_group" "myNSG" {
   name                = var.virtual_network.network_security_group.name
   location            = var.location
   resource_group_name = var.resource_group_name
+  tags                = var.tags
 }
 
 resource "azurerm_network_security_rule" "rules" {
@@ -47,6 +49,7 @@ resource "azurerm_public_ip" "natgwpip" {
   allocation_method   = var.virtual_network.nat_gateway.public_ip.allocation_method
   sku                 = var.virtual_network.nat_gateway.public_ip.sku
   zones               = var.virtual_network.nat_gateway.public_ip.zones
+  tags                = var.tags
 }
 
 #add nat gateway to enable outbound traffic from the backend instances
@@ -57,6 +60,7 @@ resource "azurerm_nat_gateway" "this" {
   sku_name                = var.virtual_network.nat_gateway.sku
   idle_timeout_in_minutes = 10
   zones                   = var.virtual_network.nat_gateway.zones 
+  tags                    = var.tags
 }
 
 resource "azurerm_subnet_nat_gateway_association" "this" {

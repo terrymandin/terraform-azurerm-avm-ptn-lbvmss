@@ -1,5 +1,6 @@
 resource "azurerm_orchestrated_virtual_machine_scale_set" "virtual_machine_scale_set" {
   name                        = var.virtual_machine_scale_set.name
+  tags                        = var.tags 
   resource_group_name         = var.resource_group_name
   location                    = var.location
   sku_name                    = var.virtual_machine_scale_set.sku_name
@@ -35,7 +36,6 @@ resource "azurerm_orchestrated_virtual_machine_scale_set" "virtual_machine_scale
     name                          = "nic"
     primary                       = true
     enable_accelerated_networking = false
-
     ip_configuration {
       name                                   = "ipconfig"
       primary                                = true

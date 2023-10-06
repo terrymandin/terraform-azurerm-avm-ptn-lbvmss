@@ -19,6 +19,12 @@ variable "location" {
   description = "The region where the resources will be deployed."
 }
 
+variable "tags" {
+  type        = map(any)
+  description = "Map of tags to assign to the resources."
+  default     = null
+}
+
 variable "virtual_machine_scale_set" {
   type = object({
     name      = string

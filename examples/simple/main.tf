@@ -51,6 +51,7 @@ module "load_balancer_scale_set" {
   enable_telemetry    = var.enable_telemetry
   resource_group_name = azurerm_resource_group.this.name
   location            = azurerm_resource_group.this.location
+  tags                = { sample = "terraform-lb-vmss-simple-example" }
   virtual_machine_scale_set = {
     name = module.naming.virtual_machine_scale_set.name_unique
     os_profile = {
